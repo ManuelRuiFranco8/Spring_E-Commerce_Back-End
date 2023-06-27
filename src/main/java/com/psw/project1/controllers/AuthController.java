@@ -15,7 +15,7 @@ public class AuthController {
 
     @CrossOrigin
     @PostMapping({"/authenticate"})
-    public ResponseEntity obtainToken(@RequestBody JwtRequest request) throws Exception {
+    public ResponseEntity obtainToken(@RequestBody JwtRequest request) {
         try {
             JwtResponse token=service.createToken(request);
             return new ResponseEntity(token, HttpStatus.OK);

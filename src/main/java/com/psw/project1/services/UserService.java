@@ -6,6 +6,8 @@ import com.psw.project1.utils.exceptions.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.*;
+
+import java.io.IOException;
 import java.util.*;
 import static com.psw.project1.entities.User_Roles.ADMIN;
 import static com.psw.project1.entities.User_Roles.USER;
@@ -21,8 +23,12 @@ public class UserService {
     private PasswordEncoder encoder;
 
     //@Transactional
-    public User registerNewUser(User user) throws AppException { //registers a new user (NOT ADMIN)
-        if(userRep.existsByUsername(user.getUsername())) {
+    public User registerNewUser(User user) throws AppException, IOException { //registers a new user (NOT ADMIN)
+        if(user.getUsername().equals("") || user.getFirst_name().equals("") || user.getLast_name().equals("") ||
+           user.getPassword().equals("") || user.getAddress().equals("") || user.getTelephone().equals("") ||
+           user.getEmail().equals("")) {
+            throw new IOException("Incorrect data. Impossible to register the profile");
+        } else if(userRep.existsByUsername(user.getUsername())) {
             throw new UsernameAlreadyUsedException();
         } else if(userRep.existsByEmail(user.getEmail())) {
             throw new MailAlreadyUsedException();

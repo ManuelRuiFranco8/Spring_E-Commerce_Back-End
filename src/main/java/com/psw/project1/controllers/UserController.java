@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.*;
+import java.io.IOException;
+import java.sql.SQLOutput;
 
 @RestController
 public class UserController {
@@ -22,12 +24,15 @@ public class UserController {
     }//initAdmin
 
     @PostMapping({"/signIn"}) //method to register a new user to the platform
-    public ResponseEntity registerNewUser(@RequestBody User user) throws AppException { //the body is a new user in JSON format
+    public ResponseEntity registerNewUser(@RequestBody User user) { //the body is a new user in JSON format
         try {
+            System.out.println(user.toString());
             User newUser=userServ.registerNewUser(user); //the request returns the newly registered user in JSON format
             return new ResponseEntity(newUser, HttpStatus.OK);
         } catch(AppException e) {
-            return new ResponseEntity<>(e.getMsg(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(e.getMsg(), HttpStatus.CONFLICT);
+        } catch(IOException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
         }//try-catch
     }//registerNewUser
 

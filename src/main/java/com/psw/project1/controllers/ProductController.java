@@ -23,7 +23,7 @@ public class ProductController {
     @PreAuthorize("hasRole('ADMIN')") //only the administrator may be able to access this endpoint
     @PostMapping(value={"/addProduct"}, consumes={MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity addProduct(@RequestPart("product") Product product,
-                                     @RequestPart("imageFile") MultipartFile[] file) throws AppException {
+                                     @RequestPart("imageFile") MultipartFile[] file) {
                                      //the body is a new product in JSON format and a file of images
         try{
             //Set<Image> images=serv.uploadImage(file);
@@ -32,10 +32,10 @@ public class ProductController {
             return new ResponseEntity(newProd, HttpStatus.OK); //the request returns the newly added product in JSON format
         } catch(AppException e) {
             System.out.println(e.getMsg());
-            return new ResponseEntity<>(e.getMsg(), HttpStatus.CONFLICT);
+            return new ResponseEntity(e.getMsg(), HttpStatus.CONFLICT);
         } catch(Exception e) {
             System.out.println("Incorrect data. Impossible to add product to the database.");
-            return new ResponseEntity<>("Incorrect data. Impossible to add product to the database.", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity("Incorrect data. Impossible to add product to the database.", HttpStatus.BAD_REQUEST);
         }//try-catch
     }//addNewProduct
 
@@ -77,7 +77,7 @@ public class ProductController {
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @GetMapping({"/getProductDetailsNV"})
-    public ResponseEntity getProductDetails(@RequestParam("productName") String name, @RequestParam("productVendor") String vendor) {
+    public ResponseEntity getProductDetailsNV(@RequestParam("productName") String name, @RequestParam("productVendor") String vendor) {
         try {
             Product prod=serv.getProductDetailsNV(name,vendor);
             return new ResponseEntity(prod, HttpStatus.OK);
