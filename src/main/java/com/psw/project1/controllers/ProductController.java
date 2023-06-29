@@ -4,6 +4,7 @@ import com.psw.project1.entities.*;
 import com.psw.project1.services.*;
 import com.psw.project1.utils.exceptions.AppException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -58,8 +59,9 @@ public class ProductController {
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @GetMapping({"/getAllProducts"})
-    public List<Product> getAllProducts() {
-        return serv.getAllProducts();
+    public Page<Product> getAllProducts(@RequestParam(defaultValue="0") int pageNumber,
+                                        @RequestParam(defaultValue="") String searchKey) {
+        return serv.getAllProducts(pageNumber, searchKey);
     }//getAllProducts
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")

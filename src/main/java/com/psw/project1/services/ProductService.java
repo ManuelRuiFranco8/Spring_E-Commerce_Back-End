@@ -6,7 +6,9 @@ import com.psw.project1.utils.exceptions.AppException;
 import com.psw.project1.utils.exceptions.ProductAlreadyExists;
 import com.psw.project1.utils.exceptions.ProductNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
@@ -29,8 +31,13 @@ public class ProductService {
         }//if-else
     }//addProduct
 
-    public List<Product> getAllProducts() { //returns a list with all the products of the database
-        return (List<Product>) rep.findAll();
+    public Page<Product> getAllProducts(int pageNumber, String searchKey) { //returns a paginated list with all the products of the database
+        Pageable pageable=PageRequest.of(pageNumber, 8); //show by default 8 products in each page
+        if(searchKey.equals("")) { //no specific research issued
+            return rep.findAll(pageable);
+        } else { //specific research issued
+            return rep.findByNameContainingIgnoreCaseOrVendorContainingIgnoreCase(searchKey, searchKey, pageable);
+        }//if-else
     }//getAllProducts
 
     public Product getProductDetails(Long productId) {
