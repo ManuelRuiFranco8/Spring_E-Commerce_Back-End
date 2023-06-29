@@ -9,8 +9,7 @@ import lombok.*;
 @ToString
 
 @Entity
-@Table(name="images", schema="ecommerce",
-        uniqueConstraints={@UniqueConstraint(columnNames="image_name")})
+@Table(name="images", schema="ecommerce")
 public class Image {
 
     @Id

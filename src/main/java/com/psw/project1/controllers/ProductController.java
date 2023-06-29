@@ -43,7 +43,7 @@ public class ProductController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value={"/updateProduct"}, consumes={MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity updateProduct(@RequestParam("productId") long productId,
-                                        @RequestPart Product updatedProduct,
+                                        @RequestPart("product") Product updatedProduct,
                                         @RequestPart("imageFile") MultipartFile[] file) {
         try {
             System.out.println(productId);

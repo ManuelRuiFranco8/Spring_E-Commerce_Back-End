@@ -101,10 +101,14 @@ public class ProductService {
             existingProduct.setDescription(updatedProduct.getDescription());
             if(updatedProduct.getPrice()>0) {
                 existingProduct.setPrice(updatedProduct.getPrice());
-            }//if
+            } else {
+                throw new IOException("Invalid price specified");
+            }//if-else
             if(updatedProduct.getQuantity()>0) {
                 existingProduct.setQuantity(updatedProduct.getQuantity());
-            }//if
+            } else {
+                throw new IOException("Invalid quantity specified");
+            }//if-else
             if(updatedProduct.getProductImages()!=null) {
                 existingProduct.setProductImages(updatedProduct.getProductImages());
             }//if
