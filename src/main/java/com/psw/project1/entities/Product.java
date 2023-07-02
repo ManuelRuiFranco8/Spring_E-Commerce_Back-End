@@ -33,6 +33,7 @@ public class Product {
     @Column(name="quantity", nullable=false)
     private int quantity;
 
+    @ToString.Exclude
     @ManyToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
     @JoinTable(name="products_images", schema="ecommerce",
                joinColumns=@JoinColumn(name="product_id"),

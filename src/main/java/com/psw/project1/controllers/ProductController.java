@@ -74,7 +74,7 @@ public class ProductController {
             return new ResponseEntity<>("Product not present in the database", HttpStatus.BAD_REQUEST);
         } catch(Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
-        }
+        }//try-catch
     }//deleteProduct
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
@@ -87,7 +87,7 @@ public class ProductController {
             return new ResponseEntity<>("Product not present in the database", HttpStatus.BAD_REQUEST);
         } catch(Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
-        }
+        }//try-catch
     }//deleteProductNV
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -101,4 +101,13 @@ public class ProductController {
     public void deleteProductNV(@RequestParam("productName") String name, @RequestParam("productVendor") String vendor) {
         serv.deleteProductNV(name, vendor);
     }//deleteProductNV
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping({"/getProductsForOrder/{singleProduct}/{productId}"})
+    public List<Product> getProductsForOrder(@PathVariable(name="singleProduct") boolean singleProduct,
+                                             @PathVariable(name="productId") Long productId) {
+        List<Product> list=serv.getProductsForOrder(singleProduct, productId);
+        System.out.println(list);
+        return list;
+    }//getProductsForOrder
 }//ProductController

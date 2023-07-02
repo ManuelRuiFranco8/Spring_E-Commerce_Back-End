@@ -117,4 +117,13 @@ public class ProductService {
             throw new ProductNotFoundException();
         }//if-else
     }//updateProduct
+
+    public List<Product> getProductsForOrder(boolean singleProduct, Long productId) {
+        List<Product> list=new ArrayList<>();
+        if(singleProduct) { //single product order
+            Product product=rep.findById(productId).get();
+            list.add(product);
+        }//if
+        return list;
+    }//getProductsForOrder
 }//ProductService
