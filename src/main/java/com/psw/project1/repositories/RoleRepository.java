@@ -1,5 +1,6 @@
 package com.psw.project1.repositories;
 
+import com.psw.project1.utils.enums.User_Roles;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.*;
 import com.psw.project1.entities.*;

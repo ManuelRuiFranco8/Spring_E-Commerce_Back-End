@@ -9,8 +9,8 @@ import org.springframework.stereotype.*;
 
 import java.io.IOException;
 import java.util.*;
-import static com.psw.project1.entities.User_Roles.ADMIN;
-import static com.psw.project1.entities.User_Roles.USER;
+import static com.psw.project1.utils.enums.User_Roles.ADMIN;
+import static com.psw.project1.utils.enums.User_Roles.USER;
 
 @Service
 public class UserService {

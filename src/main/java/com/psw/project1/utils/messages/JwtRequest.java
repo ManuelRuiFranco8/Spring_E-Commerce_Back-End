@@ -1,4 +1,4 @@
-package com.psw.project1.entities;
+package com.psw.project1.utils.messages;
 
 import lombok.*;
 

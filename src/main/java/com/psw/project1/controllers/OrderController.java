@@ -1,15 +1,13 @@
 package com.psw.project1.controllers;
 
-import com.psw.project1.entities.*;
 import com.psw.project1.services.*;
 import com.psw.project1.utils.exceptions.*;
+import com.psw.project1.utils.messages.OrderRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import java.io.IOException;
 
 @RestController
 public class OrderController {

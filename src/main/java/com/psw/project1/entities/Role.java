@@ -1,8 +1,9 @@
 package com.psw.project1.entities;
 
 import javax.persistence.*;
+
+import com.psw.project1.utils.enums.User_Roles;
 import lombok.*;
-import java.util.*;
 
 @Getter
 @Setter

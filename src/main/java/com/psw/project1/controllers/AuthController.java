@@ -1,7 +1,8 @@
 package com.psw.project1.controllers;
 
-import com.psw.project1.entities.*;
 import com.psw.project1.services.*;
+import com.psw.project1.utils.messages.JwtRequest;
+import com.psw.project1.utils.messages.JwtResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

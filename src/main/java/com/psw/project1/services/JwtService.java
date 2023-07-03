@@ -3,6 +3,8 @@ package com.psw.project1.services;
 import com.psw.project1.entities.*;
 import com.psw.project1.repositories.*;
 import com.psw.project1.utils.*;
+import com.psw.project1.utils.messages.JwtRequest;
+import com.psw.project1.utils.messages.JwtResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;

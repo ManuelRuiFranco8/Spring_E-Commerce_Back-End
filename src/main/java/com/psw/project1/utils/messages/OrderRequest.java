@@ -1,5 +1,7 @@
-package com.psw.project1.entities;
+package com.psw.project1.utils.messages;
 
+import com.psw.project1.utils.enums.Shipment_Type;
+import com.psw.project1.utils.enums.User_Contact;
 import lombok.*;
 
 import java.util.List;
@@ -11,4 +13,5 @@ import java.util.List;
 public class OrderRequest {
     private List<ProductQuantity> productsQuantityList;
     private User_Contact contact;
+    private Shipment_Type shipment;
 }//OrderRequest
