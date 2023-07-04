@@ -6,5 +6,6 @@ import com.psw.project1.entities.*;
 import java.util.*;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, Long>{
-}//OrderRepository
+public interface ProductInCartRepository extends JpaRepository<ProductInCart, Long> {
+    public List<ProductInCart> findByUser(User user);
+}//ProductInCartRepository

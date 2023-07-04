@@ -1,5 +1,6 @@
 package com.psw.project1.services;
 
+import com.psw.project1.configurations.JwtRequestFilter;
 import com.psw.project1.entities.*;
 import com.psw.project1.repositories.*;
 import com.psw.project1.utils.exceptions.AppException;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -22,6 +24,12 @@ public class ProductService {
 
     @Autowired
     private ImageRepository repIm;
+
+    @Autowired
+    private UserRepository userRep;
+
+    @Autowired
+    private ProductInCartRepository cartRep;
 
     public Product addProduct(Product product) throws AppException {
         if(rep.existsByName(product.getName()) && rep.existsByVendor(product.getVendor())) {
@@ -120,10 +128,18 @@ public class ProductService {
 
     public List<Product> getProductsForOrder(boolean singleProduct, Long productId) {
         List<Product> list=new ArrayList<>();
-        if(singleProduct) { //single product order
+        if(singleProduct && productId!=0) { //single product order
             Product product=rep.findById(productId).get();
             list.add(product);
-        }//if
+        } else { //multiple products (cart) order
+            String username=JwtRequestFilter.currentUser();
+            User user=userRep.findByUsername(username).get(0);
+            List<ProductInCart> cart=cartRep.findByUser(user);
+            for(ProductInCart pic: cart) {
+                list.add(rep.findById(pic.getProduct().getId()).get());
+            }//for
+            //list=cart.stream().map(x->x.getProduct()).collect(Collectors.toList());
+        }//if-else
         return list;
     }//getProductsForOrder
 }//ProductService

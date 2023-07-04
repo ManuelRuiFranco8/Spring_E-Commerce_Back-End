@@ -15,11 +15,12 @@ public class OrderController {
     @Autowired
     private OrderService orderServ;
 
-    @PreAuthorize("hasRole('USER')") //only the administrator may be able to access this endpoint
-    @PostMapping({"/placeOrder"})
-    public ResponseEntity placeOrder(@RequestBody OrderRequest request) {
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping({"/placeOrder/{singleProduct}"})
+    public ResponseEntity placeOrder(@PathVariable(name="singleProduct") boolean singleProduct,
+                                     @RequestBody OrderRequest request) {
         try{
-            orderServ.placeOrder(request);
+            orderServ.placeOrder(request, singleProduct);
             return new ResponseEntity(HttpStatus.OK); //the request returns the newly added product in JSON format
         } catch(AppException ae) {
             System.out.println(ae.getMsg());
@@ -29,6 +30,4 @@ public class OrderController {
             return new ResponseEntity("Procedural error. Impossible to place order", HttpStatus.BAD_REQUEST);
         }//try-catch
     }//placeOrder
-
-
 }//OrderContrller

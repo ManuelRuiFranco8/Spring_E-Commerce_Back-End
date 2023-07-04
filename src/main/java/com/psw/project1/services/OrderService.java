@@ -24,8 +24,13 @@ public class OrderService {
     @Autowired
     private UserRepository userRep;
 
-    public void placeOrder(OrderRequest request) throws AppException {
+    @Autowired
+    private ProductInCartRepository cartRep;
+
+    public void placeOrder(OrderRequest request, boolean singleProduct) throws AppException {
         List<ProductQuantity> productQuantities=request.getProductsQuantityList();
+        String currentUser=JwtRequestFilter.currentUser();
+        User u=userRep.findByUsername(currentUser).get(0);
         for(ProductQuantity pq: productQuantities) {
             Product p=productRep.findById(pq.getProductId()).get();
             if(p.getQuantity()-pq.getQuantity()<0) {
@@ -33,11 +38,16 @@ public class OrderService {
             } else {
                 p.setQuantity(p.getQuantity()-pq.getQuantity());
             }//if-else
-            String currentUser=JwtRequestFilter.currentUser();
-            User u=userRep.findByUsername(currentUser).get(0);
             Order o=new Order(Order_Status.PLACED, (double) p.getPrice()*pq.getQuantity(),
                               p, u, request.getContact(), request.getShipment());
             orderRep.save(o);
         }//for
+        if(!singleProduct) {//empty the current user's cart
+            List<ProductInCart> cart=cartRep.findByUser(u);
+            for(ProductInCart pic: cart) {
+                cartRep.delete(pic);
+            }//for
+            //cart.stream().forEach(x->cartRep.delete(x));
+        }//if
     }//placeOrder
 }//OrderService

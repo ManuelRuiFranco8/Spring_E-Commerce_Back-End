@@ -1,13 +1,11 @@
 package com.psw.project1.entities;
 
 import javax.persistence.*;
-
 import com.psw.project1.utils.enums.Order_Status;
 import com.psw.project1.utils.enums.Shipment_Type;
 import com.psw.project1.utils.enums.User_Contact;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-
 import java.util.*;
 
 @Getter
