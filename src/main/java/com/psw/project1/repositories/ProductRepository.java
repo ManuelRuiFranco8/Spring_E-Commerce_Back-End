@@ -10,17 +10,14 @@ import java.util.*;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    List<Product> findByNameContaining(String name); //search for a product using keywords
-    List<Product> findByVendor(String vendor); //search for all the products of that vendor
-
-    //Two products with the same name and vendor cannot exist
-    List<Product> findByNameAndVendor(String name, String vendor);
+    List<Product> findByNameAndVendor(String name, String vendor); //returns a single-element list (products with the
+                                                                   //same name and vendor are not allowed)
     boolean existsByName(String name);
     boolean existsByVendor(String vendor);
+    boolean existsByNameAndVendor(String name, String vendor); //returns true if a product with the specified name and
+                                                               //vendor already exists in the database
 
-    Page<Product> findAll(Pageable pageable);
-
-    //Returns products searched from a search bar
+    //Returns products searched from a search bar in pageable format
     Page<Product> findByNameContainingIgnoreCaseOrVendorContainingIgnoreCase(
-            String key1, String key2, Pageable pageable);
+            String key1, String key2, Pageable pageable); //searches in the name and vendor fields of the products
 }//ProductRepository

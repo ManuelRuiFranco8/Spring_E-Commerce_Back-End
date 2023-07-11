@@ -2,7 +2,6 @@ package com.psw.project1.entities;
 
 import javax.persistence.*;
 import lombok.*;
-import java.util.*;
 
 @Getter
 @Setter
@@ -11,7 +10,7 @@ import java.util.*;
 
 @Entity
 @Table(name="productsInCart", schema="ecommerce")
-public class ProductInCart {
+public class ProductInCart { //this entity represents a product currently placed in a user's cart
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -19,15 +18,15 @@ public class ProductInCart {
     private Long id;
 
     @OneToOne
-    private Product product;
+    private Product product; //a product in cart basically consists into a <product, user> couple
 
     @OneToOne
-    private User user;
+    private User user; //a product in cart basically consists into a <product, user> couple
 
     public ProductInCart(Product product, User user) {
         this.product=product;
         this.user=user;
-    }//constructor
+    }//constructor(parameters)
 
-    public ProductInCart() {}//default constructor
+    public ProductInCart() {}//default constructor(no parameters)
 }//ProductInCart

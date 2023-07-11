@@ -6,7 +6,6 @@ import com.psw.project1.utils.exceptions.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.*;
-
 import java.io.IOException;
 import java.util.*;
 import static com.psw.project1.utils.enums.User_Roles.ADMIN;
@@ -26,7 +25,7 @@ public class UserService {
     public User registerNewUser(User user) throws AppException, IOException { //registers a new user (NOT ADMIN)
         if(user.getUsername().equals("") || user.getFirst_name().equals("") || user.getLast_name().equals("") ||
            user.getPassword().equals("") || user.getAddress().equals("") || user.getTelephone().equals("") ||
-           user.getEmail().equals("")) {
+           user.getEmail().equals("")) { //if some necessary fields are missing
             throw new IOException("Incorrect data. Impossible to register the profile");
         } else if(userRep.existsByUsername(user.getUsername())) {
             throw new UsernameAlreadyUsedException();
@@ -38,13 +37,13 @@ public class UserService {
             user.setPassword(getEncoder(user.getPassword())); //the password is saved in encrypted text
             Set<Role> roles=new HashSet<>();
             roles.add(roleRep.findByType(USER).get(0));
-            user.setRoles(roles); //assigns the generic user role
+            user.setRoles(roles); //assigns the generic user role to the new user
             return userRep.save(user); //the new user is added to the table
-        }//else
+        }//if-else
     }//registerNewUser
 
     public void initAdmin() { //create a single default admin for the platform and stores it in the database
-        if(!userRep.existsByUsername("Francesco99Admin")) {
+        if(!userRep.existsByUsername("Francesco99Admin")) { //the admin is initialized just once
             User admin=new User();
             admin.setUsername("Francesco99Admin");
             admin.setFirst_name("Francesco");
@@ -54,15 +53,15 @@ public class UserService {
             admin.setTelephone("3323855058");
             admin.setPassword(getEncoder("Milan$tich88")); //the password is saved in encrypted text
             Set<Role> roles=new HashSet<>();
-            roles.add(roleRep.findByType(ADMIN).get(0));
+            roles.add(roleRep.findByType(ADMIN).get(0)); //assigns admin role
             admin.setRoles(roles); //assigns the admin role
             userRep.save(admin);
         }//if
-    }//initAdmin*/
+    }//initAdmin
 
     public String getEncoder(String password) {
         return encoder.encode(password);
-    }//getEncoder
+    }//getEncoder (encrypts password)
 
     //@Transactional
     public List<User> getAllUsers() {

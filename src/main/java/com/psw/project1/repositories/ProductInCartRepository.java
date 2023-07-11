@@ -8,5 +8,5 @@ import java.util.*;
 @Repository
 public interface ProductInCartRepository extends JpaRepository<ProductInCart, Long> {
 
-    public List<ProductInCart> findByUser(User user);
+    public List<ProductInCart> findByUser(User user); //returns all product-in-cart items associated to the user
 }//ProductInCartRepository

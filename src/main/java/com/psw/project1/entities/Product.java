@@ -10,7 +10,9 @@ import java.util.*;
 @ToString
 
 @Entity
-@Table(name="products", schema="ecommerce")
+@Table(name="products", schema="ecommerce", uniqueConstraints={
+    @UniqueConstraint(columnNames={"product_name", "vendor"}) //no products with the same name and vendor allowed
+})//@Table
 public class Product {
 
     @Id
@@ -33,8 +35,8 @@ public class Product {
     @Column(name="quantity", nullable=false)
     private int quantity;
 
-    @ToString.Exclude
-    @ManyToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+    @ToString.Exclude //lombok doesn't consider this field in the toString() method
+    @ManyToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL) //associates a product to a set of images (also empty)
     @JoinTable(name="products_images", schema="ecommerce",
                joinColumns=@JoinColumn(name="product_id"),
                inverseJoinColumns=@JoinColumn(name="image_id"))

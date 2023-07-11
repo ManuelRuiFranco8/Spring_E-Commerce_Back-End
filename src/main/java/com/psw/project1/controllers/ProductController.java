@@ -29,7 +29,7 @@ public class ProductController {
         try{
             //Set<Image> images=serv.uploadImage(file);
             //product.setProductImages(images);
-            Product newProd=serv.addProduct2(product, file);
+            Product newProd=serv.addProduct(product, file);
             return new ResponseEntity(newProd, HttpStatus.OK); //the request returns the newly added product in JSON format
         } catch(AppException e) {
             System.out.println(e.getMsg());

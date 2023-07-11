@@ -39,7 +39,7 @@ public class Order {
     private Double amount;
 
     @Basic
-    @CreationTimestamp
+    @CreationTimestamp //the issuing date of the order is automatically generated
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name="order_date")
     private Date date;
@@ -50,21 +50,21 @@ public class Order {
     private Date ShipmentDate;
 
     @OneToOne
-    private Product boughtProduct;
+    private Product boughtProduct; //each order is univocally associated to a <product, user> couple
 
     @OneToOne
-    private User buyingUser;
+    private User buyingUser; //each order is univocally associated to a <product, user> couple
 
-    public Order(Order_Status status, Double amount, Product boughtProduct, User buyingUser, User_Contact contact,
-                 Shipment_Type shipment) {
+    public Order(Order_Status status, Double amount, Product boughtProduct,
+                 User buyingUser, User_Contact contact, Shipment_Type shipment) {
         this.buyingUser=buyingUser;
         this.buyer=buyingUser.getFirst_name()+" "+buyingUser.getLast_name();
         this.shipmentAddress=buyingUser.getAddress();
         if(contact.equals(User_Contact.EMAIL)) {
             this.contact=buyingUser.getEmail();
-        } else {
+        } else if (contact.equals(User_Contact.TELEPHONE)){
             this.contact=buyingUser.getTelephone();
-        }//if-else
+        }//if-else (specifying order preferences)
         this.boughtProduct=boughtProduct;
         this.status=status;
         this.amount=amount;
@@ -73,13 +73,13 @@ public class Order {
         Calendar calendar=Calendar.getInstance();
         calendar.setTime(currentDate);
         if(shipment.equals(Shipment_Type.PREMIUM)) {
-            calendar.add(Calendar.DAY_OF_MONTH, 2);
+            calendar.add(Calendar.DAY_OF_MONTH, 2); //2 days shipment
             this.ShipmentDate=calendar.getTime();
         } else if(shipment.equals(Shipment_Type.STANDARD)) {
-            calendar.add(Calendar.DAY_OF_MONTH, 7);
+            calendar.add(Calendar.DAY_OF_MONTH, 7); //7 days shipment
             this.ShipmentDate=calendar.getTime();
-        }//if-else
-    }//constructor
+        }//if-else (setting shipment date according to shipment preferences)
+    }//constructor(parameters)
 
-    public Order() {} //default constructor
+    public Order() {} //default constructor(no parameters)
 }//Order

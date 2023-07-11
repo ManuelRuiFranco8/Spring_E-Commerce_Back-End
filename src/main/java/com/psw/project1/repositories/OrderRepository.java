@@ -10,8 +10,9 @@ import java.util.*;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long>{
 
-    public List<Order> findByBuyingUser(User user);
+    public List<Order> findByBuyingUser(User user); //returns all the order associated to the specified user
 
     @Query("SELECT o FROM Order o WHERE o.buyingUser = :user AND o.status = :status")
-    public List<Order> findByStatus(User user, Order_Status status);
+    public List<Order> findByStatus(User user, Order_Status status); //returns all the order associated to the
+                                                                     //specified user and with the specified status
 }//OrderRepository

@@ -9,5 +9,5 @@ import java.util.*;
 @Repository
 public interface RoleRepository extends JpaRepository<Role, User_Roles> {
 
-    List<Role> findByType(User_Roles type); //returns a single element list (type is key for the entity Role)
+    List<Role> findByType(User_Roles type); //returns a single element list ("type" is key for the entity Role)
 }//RoleRepository

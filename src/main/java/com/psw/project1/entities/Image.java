@@ -24,7 +24,7 @@ public class Image {
     private String type;
 
     @Column(name="picture_content", nullable=false, length=500000)
-    private byte[] picture;
+    private byte[] picture; //images of various format are stored in the database as byte array
 
     public Image(String name, String type, byte[] picture) {
         this.name=name;
@@ -32,5 +32,5 @@ public class Image {
         this.picture=picture;
     }//constructor(parameters)
 
-    public Image() {}//constructor(no parameters)
+    public Image() {}//default constructor(no parameters)
 }//Image
