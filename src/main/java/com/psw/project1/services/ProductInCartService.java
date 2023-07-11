@@ -55,4 +55,8 @@ public class ProductInCartService {
             throw new IOException();
         }//if-else
     }//getCartDetails
+
+    public void deleteCartItem(Long cartId) {
+        cartRep.deleteById(cartId);
+    }//deleteCartItem
 }//ProductInCartService

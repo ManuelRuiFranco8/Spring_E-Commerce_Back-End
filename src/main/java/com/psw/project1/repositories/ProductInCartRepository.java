@@ -7,5 +7,6 @@ import java.util.*;
 
 @Repository
 public interface ProductInCartRepository extends JpaRepository<ProductInCart, Long> {
+
     public List<ProductInCart> findByUser(User user);
 }//ProductInCartRepository

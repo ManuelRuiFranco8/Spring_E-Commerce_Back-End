@@ -11,11 +11,10 @@ import java.util.*;
 
 @Entity
 @Table(name="users", schema="ecommerce", uniqueConstraints={
-        @UniqueConstraint(columnNames="username"),
-        @UniqueConstraint(columnNames="telephone"),
-        @UniqueConstraint(columnNames="email"),
-        @UniqueConstraint(columnNames="user_password"),
-})
+        @UniqueConstraint(columnNames="username"), //no users with the same username allowed
+        @UniqueConstraint(columnNames="telephone"), //no users with the same cell number allowed
+        @UniqueConstraint(columnNames="email"), //no users with the same email allowed
+})//@Table
 public class User {
 
     @Id
@@ -44,8 +43,7 @@ public class User {
     @Column(name="user_password", nullable=false, columnDefinition="TEXT")
     private String password;
 
-    //cascade=CascadeType.ALL
-    @ManyToMany(fetch=FetchType.EAGER) //associate each user to at least a role in the platform
+    @ManyToMany(fetch=FetchType.EAGER) //associates each user to at least a role in the platform
     @JoinTable(name="users_roles", schema="ecommerce",
             joinColumns=@JoinColumn(name="user_id", referencedColumnName="user_id"),
             inverseJoinColumns=@JoinColumn(name="role_type",referencedColumnName="role_type"))

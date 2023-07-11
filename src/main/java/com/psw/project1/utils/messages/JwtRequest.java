@@ -7,7 +7,7 @@ import lombok.*;
 @EqualsAndHashCode
 @ToString
 
-public class JwtRequest { //the authentication token is obtained specifying username and password
+public class JwtRequest { //user's request issued to obtain the authentication token
     private String userName;
     private String userPassword;
 }//JwtRequest

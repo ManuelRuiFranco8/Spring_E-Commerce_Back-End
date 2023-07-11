@@ -4,7 +4,7 @@ import com.psw.project1.configurations.JwtRequestFilter;
 import com.psw.project1.entities.*;
 import com.psw.project1.repositories.*;
 import com.psw.project1.utils.exceptions.AppException;
-import com.psw.project1.utils.exceptions.ProductAlreadyExists;
+import com.psw.project1.utils.exceptions.ProductAlreadyExistsException;
 import com.psw.project1.utils.exceptions.ProductNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -33,7 +32,7 @@ public class ProductService {
 
     public Product addProduct(Product product) throws AppException {
         if(rep.existsByName(product.getName()) && rep.existsByVendor(product.getVendor())) {
-            throw new ProductAlreadyExists();
+            throw new ProductAlreadyExistsException();
         } else {
             return rep.save(product); //the new product is added to the table
         }//if-else
@@ -76,7 +75,7 @@ public class ProductService {
 
     public Product addProduct2(Product product, MultipartFile[] multiFile) throws AppException, IOException {
         if(rep.existsByName(product.getName()) && rep.existsByVendor(product.getVendor())) {
-            throw new ProductAlreadyExists();
+            throw new ProductAlreadyExistsException();
         } else if(product.getName()=="" || product.getVendor()=="" ||
                   product.getPrice()<=0 || product.getQuantity()<=0) {
             throw new IOException();

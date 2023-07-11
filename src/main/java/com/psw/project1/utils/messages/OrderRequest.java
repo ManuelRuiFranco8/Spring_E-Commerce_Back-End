@@ -10,8 +10,8 @@ import java.util.List;
 @Setter
 @ToString
 @EqualsAndHashCode
-public class OrderRequest {
-    private List<ProductQuantity> productsQuantityList;
-    private User_Contact contact;
-    private Shipment_Type shipment;
+public class OrderRequest { //user's request issued to place an order
+    private List<ProductQuantity> productsQuantityList; //a list of <product (id), quantity> couples
+    private User_Contact contact; //user's contact preferences
+    private Shipment_Type shipment; //user's shipment preferences
 }//OrderRequest

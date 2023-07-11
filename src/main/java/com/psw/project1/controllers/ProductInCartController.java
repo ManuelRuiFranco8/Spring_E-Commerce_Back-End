@@ -41,4 +41,10 @@ public class ProductInCartController {
             return new ResponseEntity("Procedural Error", HttpStatus.BAD_REQUEST);
         }//try-catch
     }//addToCart
+
+    @PreAuthorize("hasRole('USER')")
+    @DeleteMapping({"/removeProduct/{cartId}"})
+    public void deleteCartItem(@PathVariable(name="cartId") Long cartId) {
+        cartServ.deleteCartItem(cartId);
+    }//deleteCartItem
 }//ProductInCartController

@@ -73,10 +73,10 @@ public class Order {
         Calendar calendar=Calendar.getInstance();
         calendar.setTime(currentDate);
         if(shipment.equals(Shipment_Type.PREMIUM)) {
-            calendar.add(Calendar.DAY_OF_MONTH, 5);
+            calendar.add(Calendar.DAY_OF_MONTH, 2);
             this.ShipmentDate=calendar.getTime();
         } else if(shipment.equals(Shipment_Type.STANDARD)) {
-            calendar.add(Calendar.DAY_OF_MONTH, 14);
+            calendar.add(Calendar.DAY_OF_MONTH, 7);
             this.ShipmentDate=calendar.getTime();
         }//if-else
     }//constructor
