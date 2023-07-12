@@ -36,7 +36,8 @@ public class Product {
     private int quantity;
 
     @ToString.Exclude //lombok doesn't consider this field in the toString() method
-    @ManyToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL) //associates a product to a set of images (also empty)
+    @ManyToMany(fetch=FetchType.EAGER, cascade={CascadeType.DETACH, CascadeType.MERGE,
+                CascadeType.PERSIST, CascadeType.REFRESH}) //associates a product to a set of images (also empty)
     @JoinTable(name="products_images", schema="ecommerce",
                joinColumns=@JoinColumn(name="product_id"),
                inverseJoinColumns=@JoinColumn(name="image_id"))

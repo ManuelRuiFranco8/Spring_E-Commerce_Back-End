@@ -41,18 +41,21 @@ public class ProductService {
             Set<Image> existentImages=new HashSet<>(); //set of images in the request already present in the db
             for(MultipartFile file: multiFile) {
                 String name=file.getOriginalFilename();
-                if(repIm.existsByName(name)) { //if the images is already present in the db
+                //System.out.println(name); (debugging)
+                if(repIm.findByName(name).size()!=0) { //if the image is already present in the db
                     existentImages.add(repIm.findByName(name).get(0));
                 } else { //if the image does not exist
                     Image pic=new Image(name, file.getContentType(), file.getBytes());
                     images.add(pic);
                 }//if-else
             }//for
+            //System.out.println(images); (debugging)
+            //System.out.println(existentImages); (debugging)
             product.setProductImages(images); //associates the new images with the new product
-            Product addedProd=rep.save(product); //adds the new product to the db and the new images in cascade
             for(Image i: existentImages) { //associates already existing images with the new product
-                addedProd.getProductImages().add(i);
+                product.getProductImages().add(i);
             }//for
+            Product addedProd=rep.save(product); //adds the new product to the db and the new images in cascade
             return addedProd;
         }//if-else
     }//addProduct
@@ -109,8 +112,22 @@ public class ProductService {
             } else {
                 throw new IOException("Invalid quantity specified");
             }//if-else
+            System.out.println(updatedProduct.getProductImages());
+            System.out.println(existingProduct.getProductImages());
             if(updatedProduct.getProductImages()!=null) { //change product images
-                existingProduct.setProductImages(updatedProduct.getProductImages());
+                if(updatedProduct.getProductImages().size()==0) { //no images to add/all images deleted
+                    existingProduct.setProductImages(updatedProduct.getProductImages());
+                } else { //images to add
+                    Set<Image> imagesToAdd=new HashSet<>();
+                    for(Image i: updatedProduct.getProductImages()) {
+                        if(repIm.findByName(i.getName()).size()!=0) { //if the image is already present in the db
+                           imagesToAdd.add(repIm.findByName(i.getName()).get(0));
+                        } else { //if the image is new
+                            imagesToAdd.add(i);
+                        }//if-else
+                    }//for
+                    existingProduct.setProductImages(imagesToAdd);
+                }//if-elese
             }//if
             return rep.save(existingProduct);
         } else {

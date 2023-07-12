@@ -9,7 +9,8 @@ import lombok.*;
 @ToString
 
 @Entity
-@Table(name="images", schema="ecommerce")
+@Table(name="images", schema="ecommerce", uniqueConstraints={
+        @UniqueConstraint(columnNames="image_name")})
 public class Image {
 
     @Id
@@ -22,7 +23,7 @@ public class Image {
 
     @Column(name="image_type", nullable=false, length=50)
     private String type;
-
+    @ToString.Exclude //lombok doesn't consider this field in the toString() method
     @Column(name="picture_content", nullable=false, length=500000)
     private byte[] picture; //images of various format are stored in the database as byte array
 

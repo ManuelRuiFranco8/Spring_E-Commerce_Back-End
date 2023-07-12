@@ -8,7 +8,6 @@ import java.util.*;
 @Repository
 public interface ImageRepository extends JpaRepository<Product, Long> {
 
-    List<Image> findByName(String name); //returns all the images with the specified name
-
-    boolean existsByName(String name); //returns true if an image with the specified name already exists
+    @Query("SELECT i FROM Image i WHERE i.name = :name")
+    public List<Image> findByName(String name); //returns all the images with the specified name
 }//ImageRepository
