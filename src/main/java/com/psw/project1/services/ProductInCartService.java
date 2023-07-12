@@ -20,15 +20,15 @@ public class ProductInCartService {
     @Autowired
     private UserRepository userRep;
 
-    public ProductInCart addToCart(Long productId) throws IOException {
+    public ProductInCart addToCart(Long productId) throws IOException { //adds product to current user's cart
         boolean alreadyPresent=false;
-        Product product=productRep.findById(productId).get();
+        Product product=productRep.findById(productId).get(); //fetches product to add
         String username=JwtRequestFilter.currentUser();
         User user=null;
         if(username!=null) {
-            user=userRep.findByUsername(username).get(0);
+            user=userRep.findByUsername(username).get(0); //fetches current user
         }//if
-        List<ProductInCart> cart=cartRep.findByUser(user);
+        List<ProductInCart> cart=cartRep.findByUser(user); //fetches current user's cart
         for(ProductInCart pic: cart) {
             if(pic.getProduct().getId()==productId) { //if the product is already present in current user's cart
                 alreadyPresent=true;
@@ -36,11 +36,11 @@ public class ProductInCartService {
             }//if
         }//for
         if(alreadyPresent) {
-            return null; //do not add the product to the cart if already present
+            return null; //do not add again the product to the cart if already present
         }//if
         if(product!=null && user!=null) {
             ProductInCart pic=new ProductInCart(product, user);
-            return cartRep.save(pic);
+            return cartRep.save(pic); //adds the product to the current user's cart
         } else {
             throw new IOException("Impossible to add the product to the user's cart");
         }//if-else
@@ -48,9 +48,9 @@ public class ProductInCartService {
 
     public List<ProductInCart> getCartDetails() throws IOException {
         String username=JwtRequestFilter.currentUser();
-        User user=userRep.findByUsername(username).get(0);
+        User user=userRep.findByUsername(username).get(0); //fetches current users
         if(user!=null) {
-            return cartRep.findByUser(user);
+            return cartRep.findByUser(user); //returns all cart items associated to the current user
         } else {
             throw new IOException();
         }//if-else

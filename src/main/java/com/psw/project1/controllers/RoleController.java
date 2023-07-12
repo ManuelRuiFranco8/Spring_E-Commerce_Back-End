@@ -14,12 +14,12 @@ public class RoleController {
     @Autowired
     private RoleService roleServ;
 
-    @PostMapping() //method to add a new row in the role table
-    public ResponseEntity createNewRole(@RequestBody Role role) { //the body of the request is a new role in JSON format
+    @PostMapping() //adds a new row in the role table (it will not have a front-end endpoint)
+    public ResponseEntity createNewRole(@RequestBody Role role) { //the body is a new role in JSON format
         try {
             Role newRole=roleServ.createNewRole(role);
-            return new ResponseEntity(newRole, HttpStatus.OK); //the request returns the newly added role in JSON format
-        } catch(Exception e) {
+            return new ResponseEntity(newRole, HttpStatus.OK); //role successfully added
+        } catch(Exception e) { //role cannot be added
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
         }//try-catch
     }//createNewRole

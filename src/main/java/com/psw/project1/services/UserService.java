@@ -26,7 +26,7 @@ public class UserService {
         if(user.getUsername().equals("") || user.getFirst_name().equals("") || user.getLast_name().equals("") ||
            user.getPassword().equals("") || user.getAddress().equals("") || user.getTelephone().equals("") ||
            user.getEmail().equals("")) { //if some necessary fields are missing
-            throw new IOException("Incorrect data. Impossible to register the profile");
+            throw new IOException("Missing data. Impossible to register the profile");
         } else if(userRep.existsByUsername(user.getUsername())) {
             throw new UsernameAlreadyUsedException();
         } else if(userRep.existsByEmail(user.getEmail())) {

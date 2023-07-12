@@ -16,8 +16,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled=true)
-public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+@EnableGlobalMethodSecurity(prePostEnabled=true) //enables global method-level security
+public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter { //provides default security configuration
 
     @Autowired
     private JwtAuthenticationEntryPoint jwtAuthEntry;
@@ -33,19 +33,19 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }//authenticationManagerBean
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.cors();
-        http.csrf().disable()
+    protected void configure(HttpSecurity http) throws Exception { //configures http security
+        http.cors(); //enables Cross-Origin Resource Sharing (CORS) support.
+        http.csrf().disable() //disables CSRF (Cross-Site Request Forgery) protection
                 //endpoints where token-based authentication is not applied
                 .authorizeRequests().antMatchers("/authenticate", "/signIn").permitAll()
-                .antMatchers(HttpHeaders.ALLOW).permitAll()
-                .anyRequest().authenticated() //applies token-based authentication to the other endpoints
+                .antMatchers(HttpHeaders.ALLOW).permitAll() //allows all requests with the "ALLOW" header
+                .anyRequest().authenticated() //applies token-based authentication to all other endpoints
                 .and()
-                .exceptionHandling().authenticationEntryPoint(jwtAuthEntry)
+                .exceptionHandling().authenticationEntryPoint(jwtAuthEntry)//sets JWT authentication entry point.
                 .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); //to not store
-                                                                                             //authentication info
-        http.addFilterBefore(jwtReqFilter, UsernamePasswordAuthenticationFilter.class);
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); //the back-end server do
+                                                                                             //not store session info
+        http.addFilterBefore(jwtReqFilter, UsernamePasswordAuthenticationFilter.class); //adds the JWT filter
     }//configure
 
     @Bean

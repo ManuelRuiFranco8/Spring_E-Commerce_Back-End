@@ -30,56 +30,57 @@ public class OrderService {
     public void placeOrder(OrderRequest request, boolean singleProduct) throws AppException {
         List<ProductQuantity> productQuantities=request.getProductsQuantityList();
         String currentUser=JwtRequestFilter.currentUser();
-        User u=userRep.findByUsername(currentUser).get(0);
+        User u=userRep.findByUsername(currentUser).get(0); //gets the user currently placing the order
         int addShipTax=1;
-        for(ProductQuantity pq: productQuantities) {
-            Product p=productRep.findById(pq.getProductId()).get();
-            if(p.getQuantity()-pq.getQuantity()<0) {
+        for(ProductQuantity pq: productQuantities) { //for every product in the order
+            Product p=productRep.findById(pq.getProductId()).get(); //fetches the product
+            if(p.getQuantity()-pq.getQuantity()<0) { //if available product's stock is insufficient for the order
                 throw new ProductOutOfStockException();
-            } else {
-                p.setQuantity(p.getQuantity()-pq.getQuantity());
+            } else { //if available product's stock is sufficient for the order
+                p.setQuantity(p.getQuantity()-pq.getQuantity()); //updates available product's stock
             }//if-else
-            double amount=(double) p.getPrice()*pq.getQuantity();
+            double amount=(double) p.getPrice()*pq.getQuantity(); //order partial amount (relative to current product)
             if(addShipTax==productQuantities.size()) { //add the shipment fee to the last product
-                if(request.getShipment()==Shipment_Type.STANDARD) {
+                if(request.getShipment().equals(Shipment_Type.STANDARD)) {
                     amount+=2.99;
-                } else {
+                } else if (request.getShipment().equals(Shipment_Type.PREMIUM)){
                     amount+=10.99;
                 }//if-else
-            }//if
-            Order o=new Order(Order_Status.PLACED, amount,
-                              p, u, request.getContact(), request.getShipment());
-            orderRep.save(o);
+            } else {
+                addShipTax+=1;
+            }//if-else
+            Order o=new Order(Order_Status.PLACED, amount, p, u, request.getContact(), request.getShipment());
+            orderRep.save(o); //save the order in the database (the order is issued)
         }//for
-        if(!singleProduct) {//empty the current user's cart
-            List<ProductInCart> cart=cartRep.findByUser(u);
+        if(!singleProduct) {//empty the current user's cart (if we are buying from the cart)
+            List<ProductInCart> cart=cartRep.findByUser(u); //takes all product in cart item associated to current user
             for(ProductInCart pic: cart) {
-                cartRep.delete(pic);
+                cartRep.delete(pic); //deletes product in cart item
             }//for
-            //cart.stream().forEach(x->cartRep.delete(x));
         }//if
     }//placeOrder
 
     public List<Order> getOrdersList(String status) {
         String user=JwtRequestFilter.currentUser();
-        User u=userRep.findByUsername(user).get(0);
-
-        List<Order> list=null;
+        User u=userRep.findByUsername(user).get(0); //fetches current user
+        List<Order> list;
         if(status.equals("ALL")) {
-            list=orderRep.findByBuyingUser(u);
+            list=orderRep.findByBuyingUser(u); //fetches all past orders of the current users
         } else if(status.equals("PLACED")) {
-            list=orderRep.findByStatus(u,Order_Status.PLACED);
+            list=orderRep.findByStatus(u,Order_Status.PLACED); //fetches orders of the current user in issued state
         } else {
-            list=orderRep.findByStatus(u,Order_Status.RECEIVED);
+            list=orderRep.findByStatus(u,Order_Status.RECEIVED); //fetches orders of the current user in received state
         }//if-else
-
         for(Order o: list) {
             Date current=new Date();
-            if(o.getShipmentDate()!=null && o.getShipmentDate().compareTo(current)<0) {
-                o.setStatus(Order_Status.RECEIVED);
-                orderRep.save(o);
+            if(o.getShipmentDate()!=null && o.getShipmentDate().compareTo(current)<0) { //if order has been received
+                o.setStatus(Order_Status.RECEIVED); //updates order status
+                if(status=="PLACED") { //if we are fetching placed orders
+                    list.remove(o); //if the order has become received, we do not show it
+                }//if
+                orderRep.save(o); //updates order with new status
             }//if
         }//for
         return list;
-    }//getOrdersList
+    }//getOrdersList (fetches past orders of the current user)
 }//OrderService

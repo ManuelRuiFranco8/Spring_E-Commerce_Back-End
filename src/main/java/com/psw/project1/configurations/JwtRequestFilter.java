@@ -17,7 +17,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
-public class JwtRequestFilter extends OncePerRequestFilter {
+public class JwtRequestFilter extends OncePerRequestFilter { //the filter intercepts requests and performs
+                                                             //authentication using jwt. The filter is executed once
+                                                             //for every request
 
     private static String CURRENT_USER="";
     @Autowired
@@ -28,17 +30,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        final String header=request.getHeader("Authorization"); //takes header from HTTP request
+        final String header=request.getHeader("Authorization"); //takes authorization header from HTTP request
         String jwtToken=null;
         String userName=null;
-        if(header!=null && header.startsWith("Bearer ")) { //retrives jwt token from header
-            jwtToken=header.substring(7); //starts the index after the "Bearer "
+        if(header!=null && header.startsWith("Bearer ")) { //if header is valid, retrieves jwt token from header
+            jwtToken=header.substring(7); //starts the index after "Bearer "
             try {
-                userName=util.getUserName(jwtToken); //retrive username from the token
-                CURRENT_USER=userName;
-            } catch(IllegalArgumentException e) {
+                userName=util.getUserName(jwtToken); //retrieves username from the token
+                CURRENT_USER=userName; //memorize current user
+            } catch(IllegalArgumentException e) { //invalid token
                 System.out.println("Unable to retrieve authentication token");
-            } catch(ExpiredJwtException e) {
+            } catch(ExpiredJwtException e) { //expired token
                 System.out.println("Your authentication token is expired");
             }//try-catch
         } else {
@@ -53,7 +55,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }//if
         }//if
-        filterChain.doFilter(request, response);
+        filterChain.doFilter(request, response); //request is offloaded to the next filter
     }//doFilterInternal (this filter intercepts the user's request to perform authentication)
 
     public static String currentUser() {

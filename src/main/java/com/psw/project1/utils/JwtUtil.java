@@ -15,48 +15,48 @@ public class JwtUtil {
     private static final int VALIDITY_INTERVAL=3600*5; //interval of validity for the authentication token (5 hours)
 
     public String getUserName(String jwt) { //obtain username from jwt token
-        return getClaim(jwt, Claims::getSubject);
+        return getClaim(jwt, Claims::getSubject); //specifies the subject claim to the claim-resolver function
     }//getUserName
 
     private <T> T getClaim(String jwt, Function<Claims, T> claimResolver) {
-        final Claims claims=getAllClaims(jwt);
-        return claimResolver.apply(claims);
+        final Claims claims=getAllClaims(jwt); //takes all the claims from the token
+        return claimResolver.apply(claims); //assigns all the token claims to the claim-resolver
     }//getClaim (higher oder function: it takes another function as parameter)
 
-    private Claims getAllClaims(String jwt) {
+    private Claims getAllClaims(String jwt) { //parses the token (verifying signature) and retrieves all token's claims
         return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(jwt).getBody();
     }//getAllClaims
 
-    public boolean validateToken(String jwt, UserDetails uD) {
+    public boolean validateToken(String jwt, UserDetails uD) { //the UserDetails object represents authenticated user
         String userName=getUserName(jwt);
-        if(userName.equals(uD.getUsername())) { //the username from the user and the username from the jwt matches
+        if(userName.equals(uD.getUsername())) { //the username from the user and the username from the jwt match
             if(!isExpired(jwt)) { //the user's token is not expired at current time
-                return true;
+                return true; //successful validation
             } else {
-             return false;
+             return false; //validation failed for token expired
             }//if-else
         } else {
-            return false;
+            return false; //validation failed for usernames mismatch
         }//if-else
     }//validateToken
 
     private boolean isExpired(String jwt) {
         final Date expirationDate=getExpirationDate(jwt);
-        return expirationDate.before(new Date()); //return true if the token is expired at current time
+        return expirationDate.before(new Date()); //returns true if the token is expired at current time
     }//isExpired
 
-    private Date getExpirationDate(String jwt) {
-        return getClaim(jwt, Claims::getExpiration); //gets the expiration date from the user's token
+    private Date getExpirationDate(String jwt) { //fetches the expiration date from the user's token
+        return getClaim(jwt, Claims::getExpiration); //specifies the expiration claim to the claim-resolver function
     }//getExpirationDate
 
-    public String generate(UserDetails uD) { //create authentication token from the details associated to a user
+    public String generate(UserDetails uD) { //creates authentication token from the details associated to a user
         Map<String, Object> claims=new HashMap<>();
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(uD.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis())) //token's creation time
-                .setExpiration(new Date(System.currentTimeMillis()+VALIDITY_INTERVAL*1000))
-                .signWith(SignatureAlgorithm.HS512, SECRET_KEY) //hashing
+                .setSubject(uD.getUsername()) //set the token's subject claim (user's username)
+                .setIssuedAt(new Date(System.currentTimeMillis())) //set the token issuance claim
+                .setExpiration(new Date(System.currentTimeMillis()+VALIDITY_INTERVAL*1000)) //set the expiration claim
+                .signWith(SignatureAlgorithm.HS512, SECRET_KEY) //signs the token using secret key and hashing
                 .compact();
     }//generate
 }//JwtUtil

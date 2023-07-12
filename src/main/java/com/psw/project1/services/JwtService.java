@@ -18,7 +18,8 @@ import org.springframework.stereotype.*;
 import java.util.*;
 
 @Service
-public class JwtService implements UserDetailsService {
+public class JwtService implements UserDetailsService { //the UserDetailsService interface loads suser-specific data
+                                                        //for authentication
 
     @Autowired
     private UserRepository userRep;
@@ -31,18 +32,18 @@ public class JwtService implements UserDetailsService {
         String userName=request.getUserName();
         String userPassword=request.getUserPassword();
         authenticate(userName, userPassword); //checks if user credentials associated with the request are valid
-        final UserDetails uD=loadUserByUsername(userName);
+        final UserDetails uD=loadUserByUsername(userName); //retrieves user details
         String token=util.generate(uD); //token generated after authentication
         User user=userRep.findByUsername(userName).get(0); //user associated with the request
-        return new JwtResponse(user, token); //contains the authenticated user and its associated token
+        return new JwtResponse(user, token); //contains the authenticated user and his associated token
     }//createToken
 
     private void authenticate(String userName, String userPassword) throws Exception {
         try {
-            manager.authenticate(new UsernamePasswordAuthenticationToken(userName, userPassword));
-        } catch(DisabledException e) {
+            manager.authenticate(new UsernamePasswordAuthenticationToken(userName, userPassword)); //auth success
+        } catch(DisabledException e) { //unsuccessful authentication
            throw new Exception("The user is disabled");
-        } catch(BadCredentialsException e) {
+        } catch(BadCredentialsException e) { //unsuccessful authentication
             throw new Exception("Bad credentials form the user");
         }//try-catch
     }//authenticate
@@ -50,19 +51,19 @@ public class JwtService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
         User user=userRep.findByUsername(userName).get(0); //remember: unique constraint over username
-        if(user!=null) { //a user associated with that username exists
-            return new org.springframework.security.core.userdetails.User(
-                    user.getUsername(), user.getPassword(), getAuthorities(user));
-        } else {
+        if(user!=null) { //a user associated with the specified username exists
+            return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+                    getAuthorities(user)); //creates user details object with authentication-specific data
+        } else { //user details cannot be extracted
             throw new UsernameNotFoundException("This username is not valid!");
         }//if-else
     }//loadUserByUsername
 
-    private Set getAuthorities(User user) { //gets the roles associated to the user
+    private Set getAuthorities(User user) { //gets the roles associated to the specified user
         Set authorities=new HashSet();
         user.getRoles().forEach(role -> {
-            authorities.add(new SimpleGrantedAuthority("ROLE_"+role.getType()));
-        });
+            authorities.add(new SimpleGrantedAuthority("ROLE_"+role.getType())); //create authority for each role
+        });//role stream
         return authorities;
     }//getAuthorities
 }//JwtService

@@ -30,6 +30,9 @@ public class ProductService {
     @Autowired
     private ProductInCartRepository cartRep;
 
+    @Autowired
+    private ImageService imageServ;
+
     public Product addProduct(Product product, MultipartFile[] multiFile) throws AppException, IOException {
         if(rep.existsByNameAndVendor(product.getName(), product.getVendor())) {
             throw new ProductAlreadyExistsException();
@@ -86,18 +89,9 @@ public class ProductService {
         rep.deleteById(id);
     }//deleteProductNV (deletes a product from the database by specifying its name and vendor
 
-    public Set<Image> uploadImage(MultipartFile[] multiFile) throws IOException {
-        Set<Image> images=new HashSet<>();
-        for(MultipartFile file: multiFile) { //extracts images one by one from the MultipartFile[]
-            Image pic=new Image(file.getOriginalFilename(), file.getContentType(), file.getBytes());
-            images.add(pic);
-        }//for
-        return images; //returns the images extracted from an add product or update product request
-    }//uploadImage
-
     public Product updateProduct(Long productId, Product updatedProduct, MultipartFile[] multiFile)
                                  throws AppException, IOException {
-        updatedProduct.setProductImages(uploadImage(multiFile)); //extracts the images from the update request
+        updatedProduct.setProductImages(imageServ.uploadImage(multiFile)); //extracts the images from the update request
         Optional<Product> optionalProduct=rep.findById(productId); //fetches product to update (part 1)
         if(optionalProduct.isPresent()) {
             Product existingProduct=optionalProduct.get(); //fetches product to update (part 2)
@@ -112,8 +106,8 @@ public class ProductService {
             } else {
                 throw new IOException("Invalid quantity specified");
             }//if-else
-            System.out.println(updatedProduct.getProductImages());
-            System.out.println(existingProduct.getProductImages());
+            //System.out.println(updatedProduct.getProductImages()); (debugging)
+            //System.out.println(existingProduct.getProductImages()); (debugging)
             if(updatedProduct.getProductImages()!=null) { //change product images
                 if(updatedProduct.getProductImages().size()==0) { //no images to add/all images deleted
                     existingProduct.setProductImages(updatedProduct.getProductImages());

@@ -15,12 +15,12 @@ public class AuthController {
     private JwtService service;
 
     @CrossOrigin
-    @PostMapping({"/authenticate"})
+    @PostMapping({"/authenticate"}) //back-end endpoint for login page
     public ResponseEntity obtainToken(@RequestBody JwtRequest request) {
         try {
             JwtResponse token=service.createToken(request);
-            return new ResponseEntity(token, HttpStatus.OK);
-        } catch(Exception e) {
+            return new ResponseEntity(token, HttpStatus.OK); //user's authentication token successfully retrieved
+        } catch(Exception e) { //if current user's token cannot be retrieved
             return new ResponseEntity("Bad credentials from the user", HttpStatus.BAD_REQUEST);
         }//try-catch
     }//obtainToken

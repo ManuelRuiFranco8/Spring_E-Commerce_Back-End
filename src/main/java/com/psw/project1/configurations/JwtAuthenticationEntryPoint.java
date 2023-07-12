@@ -15,5 +15,5 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "The user is not authorized to access the page");
-    }//commence
+    }//commence (handles unauthorized requests)
 }//JwtAuthenticationEntryPoint

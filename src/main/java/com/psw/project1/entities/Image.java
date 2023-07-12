@@ -10,7 +10,7 @@ import lombok.*;
 
 @Entity
 @Table(name="images", schema="ecommerce", uniqueConstraints={
-        @UniqueConstraint(columnNames="image_name")})
+        @UniqueConstraint(columnNames="image_name")}) //no images with the same name are allowed
 public class Image {
 
     @Id
