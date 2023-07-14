@@ -5,6 +5,7 @@ import com.psw.project1.entities.*;
 import com.psw.project1.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.util.*;
 
@@ -20,6 +21,7 @@ public class ProductInCartService {
     @Autowired
     private UserRepository userRep;
 
+    @Transactional(readOnly=false)
     public ProductInCart addToCart(Long productId) throws IOException { //adds product to current user's cart
         boolean alreadyPresent=false;
         Product product=productRep.findById(productId).get(); //fetches product to add
@@ -46,6 +48,7 @@ public class ProductInCartService {
         }//if-else
     }//addToCart
 
+    @Transactional(readOnly=true)
     public List<ProductInCart> getCartDetails() throws IOException {
         String username=JwtRequestFilter.currentUser();
         User user=userRep.findByUsername(username).get(0); //fetches current users
@@ -56,6 +59,7 @@ public class ProductInCartService {
         }//if-else
     }//getCartDetails
 
+    @Transactional(readOnly=false)
     public void deleteCartItem(Long cartId) {
         cartRep.deleteById(cartId);
     }//deleteCartItem

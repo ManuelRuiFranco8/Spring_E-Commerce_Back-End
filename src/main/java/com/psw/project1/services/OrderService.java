@@ -10,6 +10,7 @@ import com.psw.project1.utils.messages.OrderRequest;
 import com.psw.project1.utils.messages.ProductQuantity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 @Service
@@ -27,6 +28,7 @@ public class OrderService {
     @Autowired
     private ProductInCartRepository cartRep;
 
+    @Transactional(readOnly=false)
     public void placeOrder(OrderRequest request, boolean singleProduct) throws AppException {
         List<ProductQuantity> productQuantities=request.getProductsQuantityList();
         String currentUser=JwtRequestFilter.currentUser();
@@ -60,6 +62,7 @@ public class OrderService {
         }//if
     }//placeOrder
 
+    @Transactional(readOnly=false)
     public List<Order> getOrdersList(String status) {
         String user=JwtRequestFilter.currentUser();
         User u=userRep.findByUsername(user).get(0); //fetches current user

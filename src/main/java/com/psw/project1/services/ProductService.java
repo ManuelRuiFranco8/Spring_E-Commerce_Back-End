@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.*;
@@ -33,6 +34,7 @@ public class ProductService {
     @Autowired
     private ImageService imageServ;
 
+    @Transactional(readOnly=false)
     public Product addProduct(Product product, MultipartFile[] multiFile) throws AppException, IOException {
         if(rep.existsByNameAndVendor(product.getName(), product.getVendor())) {
             throw new ProductAlreadyExistsException();
@@ -63,6 +65,7 @@ public class ProductService {
         }//if-else
     }//addProduct
 
+    @Transactional(readOnly=true)
     public Page<Product> getAllProducts(int pageNumber, String searchKey) {
         Pageable pageable=PageRequest.of(pageNumber, 8); //shows by default 8 products in each page
         if(searchKey.equals("")) { //no specific research issued
@@ -72,23 +75,28 @@ public class ProductService {
         }//if-else
     }//getAllProducts (returns a paginated list with all the products of the database)
 
+    @Transactional(readOnly=true)
     public Product getProductDetails(Long productId) {
         return rep.findById(productId).get();
     }//getProductDetails (fetches a product from the database by specifying its id)
 
+    @Transactional(readOnly=true)
     public Product getProductDetailsNV(String name, String vendor) {
         return rep.findByNameAndVendor(name, vendor).get(0);
     }//getProductDetailsNV (fetches a product from the database by specifying its name and vendor)
 
+    @Transactional(readOnly=false)
     public void deleteProduct(Long productId) {
         rep.deleteById(productId);
     }//deleteProduct (deletes a product from the database by specifying its id)
 
+    @Transactional(readOnly=false)
     public void deleteProductNV(String name, String vendor) {
         Long id=rep.findByNameAndVendor(name, vendor).get(0).getId();
         rep.deleteById(id);
     }//deleteProductNV (deletes a product from the database by specifying its name and vendor
 
+    @Transactional(readOnly=false)
     public Product updateProduct(Long productId, Product updatedProduct, MultipartFile[] multiFile)
                                  throws AppException, IOException {
         updatedProduct.setProductImages(imageServ.uploadImage(multiFile)); //extracts the images from the update request
@@ -129,6 +137,7 @@ public class ProductService {
         }//if-else
     }//updateProduct
 
+    @Transactional(readOnly=true)
     public List<Product> getProductsForOrder(boolean singleProduct, Long productId) {
         List<Product> list=new ArrayList<>();
         if(singleProduct && productId!=0) { //single product order

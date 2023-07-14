@@ -15,6 +15,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 @Service
@@ -28,6 +30,7 @@ public class JwtService implements UserDetailsService { //the UserDetailsService
     @Autowired
     private AuthenticationManager manager;
 
+    @Transactional(readOnly=true)
     public JwtResponse createToken(JwtRequest request) throws Exception {
         String userName=request.getUserName();
         String userPassword=request.getUserPassword();
@@ -49,6 +52,7 @@ public class JwtService implements UserDetailsService { //the UserDetailsService
     }//authenticate
 
     @Override
+    @Transactional(readOnly=true)
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
         User user=userRep.findByUsername(userName).get(0); //remember: unique constraint over username
         if(user!=null) { //a user associated with the specified username exists

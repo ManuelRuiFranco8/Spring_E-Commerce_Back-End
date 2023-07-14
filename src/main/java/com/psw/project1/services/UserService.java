@@ -6,6 +6,7 @@ import com.psw.project1.utils.exceptions.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.util.*;
 import static com.psw.project1.utils.enums.User_Roles.ADMIN;
@@ -21,7 +22,7 @@ public class UserService {
     @Autowired
     private PasswordEncoder encoder;
 
-    //@Transactional
+    @Transactional(readOnly=false)
     public User registerNewUser(User user) throws AppException, IOException { //registers a new user (NOT ADMIN)
         if(user.getUsername().equals("") || user.getFirst_name().equals("") || user.getLast_name().equals("") ||
            user.getPassword().equals("") || user.getAddress().equals("") || user.getTelephone().equals("") ||
@@ -62,9 +63,4 @@ public class UserService {
     public String getEncoder(String password) {
         return encoder.encode(password);
     }//getEncoder (encrypts password)
-
-    //@Transactional
-    public List<User> getAllUsers() {
-        return userRep.findAll();
-    }//getAllUsers
 }//UserService
