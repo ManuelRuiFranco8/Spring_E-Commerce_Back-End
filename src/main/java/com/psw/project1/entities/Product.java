@@ -1,6 +1,7 @@
 package com.psw.project1.entities;
 
 import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import java.util.*;
 
@@ -34,6 +35,12 @@ public class Product {
 
     @Column(name="quantity", nullable=false)
     private int quantity;
+
+    @Version //version field for locking operations
+    @JsonIgnore //this field will not be part of the product's json format
+    @ToString.Exclude //lombok doesn't consider this field in the toString() method
+    @Column(name="version", nullable=false)
+    private long version;
 
     @ToString.Exclude //lombok doesn't consider this field in the toString() method
     @ManyToMany(fetch=FetchType.EAGER, cascade={CascadeType.DETACH, CascadeType.MERGE,

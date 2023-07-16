@@ -94,14 +94,24 @@ public class ProductController {
 
     @PreAuthorize("hasRole('ADMIN')") //only the administrator may be able to access this endpoint
     @DeleteMapping({"/deleteProduct"}) //back-end endpoint to delete a product (specifying product id)
-    public void deleteProduct(@RequestParam("productId") long productId) {
-        serv.deleteProduct(productId);
+    public ResponseEntity deleteProduct(@RequestParam("productId") long productId) {
+        try {
+            serv.deleteProduct(productId);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch(IOException ioe) {
+            return new ResponseEntity(ioe.getMessage(), HttpStatus.CONFLICT);
+        }//try-catch
     }//deleteProduct
 
     @PreAuthorize("hasRole('ADMIN')") //only the administrator may be able to access this endpoint
     @DeleteMapping({"/deleteProductNV"}) //back-end endpoint to delete a product (specifying product name and vendor)
-    public void deleteProductNV(@RequestParam("productName") String name, @RequestParam("productVendor") String vendor) {
-        serv.deleteProductNV(name, vendor);
+    public ResponseEntity deleteProductNV(@RequestParam("productName") String name, @RequestParam("productVendor") String vendor) {
+        try {
+            serv.deleteProductNV(name, vendor);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch(IOException ioe) {
+            return new ResponseEntity(ioe.getMessage(), HttpStatus.CONFLICT);
+        }//try-catch
     }//deleteProductNV
 
     @PreAuthorize("hasRole('USER')") //only the user role may be able to access this endpoint

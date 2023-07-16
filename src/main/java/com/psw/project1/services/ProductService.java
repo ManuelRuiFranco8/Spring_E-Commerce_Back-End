@@ -34,7 +34,10 @@ public class ProductService {
     @Autowired
     private ImageService imageServ;
 
-    @Transactional(readOnly=false)
+    @Autowired
+    private OrderRepository orderRep;
+
+    @Transactional(readOnly=false, rollbackFor={IOException.class, AppException.class})
     public Product addProduct(Product product, MultipartFile[] multiFile) throws AppException, IOException {
         if(rep.existsByNameAndVendor(product.getName(), product.getVendor())) {
             throw new ProductAlreadyExistsException();
@@ -85,22 +88,45 @@ public class ProductService {
         return rep.findByNameAndVendor(name, vendor).get(0);
     }//getProductDetailsNV (fetches a product from the database by specifying its name and vendor)
 
-    @Transactional(readOnly=false)
-    public void deleteProduct(Long productId) {
-        rep.deleteById(productId);
+    @Transactional(readOnly=false, rollbackFor={IOException.class})
+    public void deleteProduct(Long productId) throws IOException {
+        //System.out.println(orderRep.existsByBoughtProduct(rep.findById(productId).get())); (debuging)
+        if(!orderRep.existsByBoughtProduct(rep.findById(productId).get())) {
+            List<ProductInCart> list=cartRep.findByProduct(rep.findById(productId).get());
+            if(list.size()>0) {
+                for(ProductInCart pic: list) {
+                    cartRep.delete(pic);
+                }//for
+            }//for
+            rep.deleteById(productId);
+            rep.deleteById(productId);
+        } else {
+            throw new IOException("Impossible to delete a product associated to an order");
+        }//if
     }//deleteProduct (deletes a product from the database by specifying its id)
 
-    @Transactional(readOnly=false)
-    public void deleteProductNV(String name, String vendor) {
+    @Transactional(readOnly=false, rollbackFor={IOException.class})
+    public void deleteProductNV(String name, String vendor) throws IOException {
         Long id=rep.findByNameAndVendor(name, vendor).get(0).getId();
-        rep.deleteById(id);
+        //System.out.println(orderRep.existsByBoughtProduct(rep.findById(id).get())); (debugging)
+        if(!orderRep.existsByBoughtProduct(rep.findById(id).get())) {
+            List<ProductInCart> list=cartRep.findByProduct(rep.findById(id).get());
+            if(list.size()>0) {
+                for(ProductInCart pic: list) {
+                    cartRep.delete(pic);
+                }//for
+            }//for
+            rep.deleteById(id);
+        } else {
+            throw new IOException("Impossible to delete a product associated to an order");
+        }//if
     }//deleteProductNV (deletes a product from the database by specifying its name and vendor
 
-    @Transactional(readOnly=false)
+    @Transactional(readOnly=false, rollbackFor={IOException.class, AppException.class})
     public Product updateProduct(Long productId, Product updatedProduct, MultipartFile[] multiFile)
                                  throws AppException, IOException {
         updatedProduct.setProductImages(imageServ.uploadImage(multiFile)); //extracts the images from the update request
-        Optional<Product> optionalProduct=rep.findById(productId); //fetches product to update (part 1)
+        Optional<Product> optionalProduct=rep.findByIdForUpdate(productId); //fetches product to update (part 1)
         if(optionalProduct.isPresent()) {
             Product existingProduct=optionalProduct.get(); //fetches product to update (part 2)
             existingProduct.setDescription(updatedProduct.getDescription()); //update product's description

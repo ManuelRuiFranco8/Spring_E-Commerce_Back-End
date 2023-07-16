@@ -28,14 +28,14 @@ public class OrderService {
     @Autowired
     private ProductInCartRepository cartRep;
 
-    @Transactional(readOnly=false)
+    @Transactional(readOnly=false, rollbackFor={AppException.class})
     public void placeOrder(OrderRequest request, boolean singleProduct) throws AppException {
         List<ProductQuantity> productQuantities=request.getProductsQuantityList();
         String currentUser=JwtRequestFilter.currentUser();
         User u=userRep.findByUsername(currentUser).get(0); //gets the user currently placing the order
         int addShipTax=1;
         for(ProductQuantity pq: productQuantities) { //for every product in the order
-            Product p=productRep.findById(pq.getProductId()).get(); //fetches the product
+            Product p=productRep.findByIdForUpdate(pq.getProductId()).get(); //fetches the product
             if(p.getQuantity()-pq.getQuantity()<0) { //if available product's stock is insufficient for the order
                 throw new ProductOutOfStockException();
             } else { //if available product's stock is sufficient for the order
@@ -78,7 +78,7 @@ public class OrderService {
             Date current=new Date();
             if(o.getShipmentDate()!=null && o.getShipmentDate().compareTo(current)<0) { //if order has been received
                 o.setStatus(Order_Status.RECEIVED); //updates order status
-                if(status=="PLACED") { //if we are fetching placed orders
+                if(status.equals("PLACED")) { //if we are fetching placed orders
                     list.remove(o); //if the order has become received, we do not show it
                 }//if
                 orderRep.save(o); //updates order with new status

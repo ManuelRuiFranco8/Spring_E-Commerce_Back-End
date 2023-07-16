@@ -22,7 +22,7 @@ public class UserService {
     @Autowired
     private PasswordEncoder encoder;
 
-    @Transactional(readOnly=false)
+    @Transactional(readOnly=false, rollbackFor={IOException.class, AppException.class})
     public User registerNewUser(User user) throws AppException, IOException { //registers a new user (NOT ADMIN)
         if(user.getUsername().equals("") || user.getFirst_name().equals("") || user.getLast_name().equals("") ||
            user.getPassword().equals("") || user.getAddress().equals("") || user.getTelephone().equals("") ||

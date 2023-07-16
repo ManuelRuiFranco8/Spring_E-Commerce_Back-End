@@ -21,7 +21,7 @@ public class ProductInCartService {
     @Autowired
     private UserRepository userRep;
 
-    @Transactional(readOnly=false)
+    @Transactional(readOnly=false, rollbackFor={IOException.class})
     public ProductInCart addToCart(Long productId) throws IOException { //adds product to current user's cart
         boolean alreadyPresent=false;
         Product product=productRep.findById(productId).get(); //fetches product to add
@@ -48,7 +48,7 @@ public class ProductInCartService {
         }//if-else
     }//addToCart
 
-    @Transactional(readOnly=true)
+    @Transactional(readOnly=true, rollbackFor={IOException.class})
     public List<ProductInCart> getCartDetails() throws IOException {
         String username=JwtRequestFilter.currentUser();
         User user=userRep.findByUsername(username).get(0); //fetches current users
