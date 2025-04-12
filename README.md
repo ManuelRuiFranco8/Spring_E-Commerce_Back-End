@@ -9,11 +9,11 @@ and user registration and authentication, intended to support a front-end client
 - JWT (JSON Web Token) 0.9.1 for token-based authentication (when a registered user logs in, it receives a token to include in the Authorization header of future HTTP requests)
 RESTful API for frontend-backend communication
 
-Application is packaged as Executable JAR (via Maven)
+Application is packaged as Executable JAR (via Maven).
 
 Two roles are distinguished for registered users, allowing different operations:
-1 **USER:** browse product catalogue, add products to chart, place orders;
-2 **ADMIN:** browse products, add products to the catalogue, remove products from the catalogue, update product details;
+1. **USER:** browse product catalogue, add products to chart, place orders;
+2. **ADMIN:** browse products, add products to the catalogue, remove products from the catalogue, update product details;
 
 # Credits 
 This project has been realized as assignment for the course of "Piattaforme Software per Applicazioni sul Web", A.A. 2022-2023
