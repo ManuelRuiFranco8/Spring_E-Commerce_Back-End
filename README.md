@@ -16,8 +16,8 @@ RESTful API for frontend-backend communication
 Application is packaged as Executable JAR (via Maven).
 
 Two roles are distinguished for registered users, allowing different operations:
-1. `**USER:**` browse product catalogue, add products to chart, place orders;
-2. `**ADMIN:**` browse products, add products to the catalogue, remove products from the catalogue, update product details;
+1. **`USER:`** browse product catalogue, add products to chart, place orders;
+2. **`ADMIN:`** browse products, add products to the catalogue, remove products from the catalogue, update product details;
 
 ---
 
